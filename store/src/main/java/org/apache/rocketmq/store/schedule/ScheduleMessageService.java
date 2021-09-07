@@ -123,7 +123,7 @@ public class ScheduleMessageService extends ConfigManager {
         for (Map.Entry<Integer, Long> entry : this.delayLevelTable.entrySet()) {
             Integer level = entry.getKey();
             Long timeDelay = entry.getValue();
-            if (timeDelay.compareTo(delayTime) > 0) {
+            if (timeDelay.compareTo(delayTime) >= 0) {
                 int rLevel = level - 2;
                 return rLevel > 0 ? rLevel : 0;
             }

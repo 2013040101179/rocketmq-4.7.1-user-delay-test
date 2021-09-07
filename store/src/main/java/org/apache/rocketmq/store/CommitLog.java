@@ -603,7 +603,13 @@ public class CommitLog {
                 String userDelayTimeStr = msg.getUserProperty(MessageConst.USER_DELAY_TIME);
                 if (StringUtils.isNotEmpty(userDelayTimeStr)) {
                     isUserDelay = true;
-                    Long userDelayTime = Long.valueOf(userDelayTimeStr);
+                    Long userDelayTime;
+                    try {
+                        userDelayTime = Long.valueOf(userDelayTimeStr);
+                    } catch (NumberFormatException e) {
+                        log.error("parse user delay time error, topic: " + msg.getTopic() + " clientAddr: " + msg.getBornHostString());
+                        return CompletableFuture.completedFuture(new PutMessageResult(PutMessageStatus.UNKNOWN_ERROR, null));
+                    }
                     queueId = this.defaultMessageStore.getScheduleMessageService().delayTime2QueueId(userDelayTime);
                     msg.setDelayTimeLevel(queueId + 1);
                     topic = TopicValidator.RMQ_SYS_SCHEDULE_TOPIC;
